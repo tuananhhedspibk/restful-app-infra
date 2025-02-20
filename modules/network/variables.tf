@@ -17,11 +17,3 @@ variable "public_subnets_cidr" {
 variable "private_subnets_cidr" {
   type = list(string)
 }
-
-variable "target_health_check_port" {
-  type = number
-}
-
-variable "target_health_check_path" {
-  type = string
-}
