@@ -10,7 +10,7 @@ variable "availability_zones" {
   type = list(string)
 }
 
-variable "public_subnet_cidr" {
+variable "public_subnets_cidr" {
   type = list(string)
 }
 
