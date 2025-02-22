@@ -3,7 +3,7 @@ locals {
 }
 
 resource "aws_security_group" "alb" {
-  name   = "${var.app_name}-alg-sg"
+  name   = "${var.app_name}-${var.env_name}-alg-sg"
   vpc_id = var.vpc_id
 
   egress {
@@ -26,7 +26,7 @@ resource "aws_security_group" "alb" {
 }
 
 resource "aws_lb" "main" {
-  name               = "${var.app_name}-alb"
+  name               = "${var.app_name}-${var.env_name}-alb"
   load_balancer_type = "application"
   idle_timeout       = 180
 
@@ -36,7 +36,7 @@ resource "aws_lb" "main" {
 }
 
 resource "aws_lb_target_group" "main" {
-  name   = "${var.app_name}-alb-main-tg"
+  name   = "${var.app_name}-${var.env_name}-alb-main-tg"
   vpc_id = var.vpc_id
 
   port        = 80

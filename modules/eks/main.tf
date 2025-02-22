@@ -1,5 +1,5 @@
 resource "aws_eks_cluster" "main" {
-  name = "${var.app_name}-eks-cluster"
+  name = "${var.app_name}-${var.env_name}-eks-cluster"
 
   role_arn = var.iam_cluster_role_arn
 
@@ -8,14 +8,14 @@ resource "aws_eks_cluster" "main" {
   }
 
   tags = {
-    Name = "${var.app_name}-eks-cluster"
+    Name = "${var.app_name}-${var.env_name}-eks-cluster"
   }
 }
 
 resource "aws_eks_node_group" "main" {
   cluster_name = aws_eks_cluster.main.name
 
-  node_group_name = "${var.app_name}-eks-node-group"
+  node_group_name = "${var.app_name}-${var.env_name}-eks-node-group"
   node_role_arn   = var.iam_node_role_arn
   subnet_ids      = var.subnet_ids
 
@@ -26,7 +26,7 @@ resource "aws_eks_node_group" "main" {
   }
 
   tags = {
-    Name = "${var.app_name}-eks-node-group"
+    Name = "${var.app_name}-${var.env_name}-eks-node-group"
   }
 }
 

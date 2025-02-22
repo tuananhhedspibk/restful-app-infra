@@ -3,7 +3,7 @@ locals {
 }
 
 resource "aws_security_group" "proxy" {
-  name        = "${var.app_name}-proxy-sg"
+  name        = "${var.app_name}-${var.env_name}-proxy-sg"
   description = "Allow ssh connect to db proxy"
   vpc_id      = var.vpc_id
 
@@ -22,7 +22,7 @@ resource "aws_security_group" "proxy" {
   }
 
   tags = {
-    Name = "${var.app_name}-proxy-sg"
+    Name = "${var.app_name}-${var.env_name}-proxy-sg"
   }
 }
 
@@ -36,6 +36,6 @@ resource "aws_instance" "proxy" {
   key_name        = "newanigram"
 
   tags = {
-    Name = "${var.app_name}-db-proxy"
+    Name = "${var.app_name}-${var.env_name}-db-proxy"
   }
 }

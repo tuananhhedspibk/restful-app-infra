@@ -7,7 +7,7 @@ locals {
 }
 
 resource "aws_iam_role" "eks_cluster_role" {
-  name = "${var.app_name}-eks-cluster-role"
+  name = "${var.app_name}-${var.env_name}-eks-cluster-role"
 
   assume_role_policy = <<EOF
 {
@@ -26,7 +26,7 @@ resource "aws_iam_role" "eks_cluster_role" {
 EOF
 
   tags = {
-    Name = "${var.app_name}-eks-role"
+    Name = "${var.app_name}-${var.env_name}-eks-role"
   }
 }
 
@@ -36,7 +36,7 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_role_attachment" {
 }
 
 resource "aws_iam_role" "eks_node_role" {
-  name = "${var.app_name}-eks-node-role"
+  name = "${var.app_name}-${var.env_name}-eks-node-role"
 
   assume_role_policy = <<EOF
 {
@@ -55,7 +55,7 @@ resource "aws_iam_role" "eks_node_role" {
 EOF
 
   tags = {
-    Name = "${var.app_name}-eks-node-role"
+    Name = "${var.app_name}-${var.env_name}-eks-node-role"
   }
 }
 

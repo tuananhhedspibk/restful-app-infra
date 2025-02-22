@@ -5,7 +5,7 @@ resource "aws_vpc" "main" {
   enable_dns_support   = true
 
   tags = {
-    Name = "${var.app_name}-vpc"
+    Name = "${var.app_name}-${var.env_name}-vpc"
   }
 }
 
@@ -13,7 +13,7 @@ resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name = "${var.app_name}-igw"
+    Name = "${var.app_name}-${var.env_name}-igw"
   }
 }
 
@@ -30,7 +30,7 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "${var.app_name}-public-subnet-${element(var.availability_zones, count.index)}"
+    Name = "${var.app_name}-${var.env_name}-public-subnet-${element(var.availability_zones, count.index)}"
   }
 }
 
@@ -43,7 +43,7 @@ resource "aws_subnet" "private" {
   map_public_ip_on_launch = false
 
   tags = {
-    Name = "${var.app_name}-private-subnet-${element(var.availability_zones, count.index)}"
+    Name = "${var.app_name}-${var.env_name}-private-subnet-${element(var.availability_zones, count.index)}"
   }
 }
 
@@ -52,7 +52,7 @@ resource "aws_nat_gateway" "main" {
   subnet_id     = element(aws_subnet.public.*.id, 0)
 
   tags = {
-    Name = "${var.app_name}-nat"
+    Name = "${var.app_name}-${var.env_name}-nat"
   }
 }
 
@@ -60,7 +60,7 @@ resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name = "${var.app_name}-public-route-table"
+    Name = "${var.app_name}-${var.env_name}-public-route-table"
   }
 }
 
@@ -68,7 +68,7 @@ resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name = "${var.app_name}-private-route-table"
+    Name = "${var.app_name}-${var.env_name}-private-route-table"
   }
 }
 
@@ -93,6 +93,6 @@ resource "aws_route_table_association" "public" {
 resource "aws_route_table_association" "private" {
   count          = length(var.private_subnets_cidr)
   subnet_id      = element(aws_subnet.private.*.id, count.index)
-  route_table_id = aws_route_table.private
+  route_table_id = aws_route_table.private.id
 }
 
