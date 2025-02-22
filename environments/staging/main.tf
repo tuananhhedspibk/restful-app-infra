@@ -1,13 +1,20 @@
 
 locals {
-  app_name                 = "restful-app"
-  env_name                 = "stg"
-  vpc_cidr                 = "10.0.0.0/16"
-  availability_zones       = ["ap-northeast-1a", "ap-northeast-1c"]
-  public_subnets_cidr      = ["10.0.3.0/24", "10.0.4.0/24"]
-  private_subnets_cidr     = ["10.0.30.0/24", "10.0.40.0/24"]
+  app_name = "restful-app"
+  env_name = "stg"
+
+  vpc_cidr             = "10.0.0.0/16"
+  availability_zones   = ["ap-northeast-1a", "ap-northeast-1c"]
+  public_subnets_cidr  = ["10.0.3.0/24", "10.0.4.0/24"]
+  private_subnets_cidr = ["10.0.30.0/24", "10.0.40.0/24"]
+
   target_health_check_path = "/v1/health"
   target_health_check_port = 80
+
+  db_database = "restful-app"
+  db_username = "admin"
+  db_password = "password"
+  db_port     = 5432
 }
 
 provider "aws" {
@@ -74,4 +81,23 @@ module "alb" {
   target_health_check_port = local.target_health_check_port
   vpc_id                   = module.network.vpc_id
   public_subnet_ids        = module.network.public_subnet_ids
+}
+
+module "database" {
+  source = "../../modules/database"
+
+  env_name             = local.env_name
+  app_name             = local.app_name
+  vpc_id               = module.network.vpc_id
+  port                 = local.db_port
+  proxy_security_group = module.proxy.security_group_id
+  vpc_cidr             = local.vpc_cidr
+  subnet_ids           = module.network.private_subnet_ids
+  master_username      = local.db_username
+  master_password      = local.db_password
+  database_name        = local.db_database
+}
+
+module "ecr" {
+  source = "../../modules/ecr"
 }
