@@ -1,5 +1,5 @@
 locals {
-  family         = "aurora-postgresql"
+  family         = "aurora-postgresql17"
   rds_engine     = "aurora-postgresql"
   engine_version = "17.4"
 }
@@ -71,59 +71,6 @@ resource "aws_rds_cluster_parameter_group" "default" {
   tags = {
     Name = "${var.app_name}-${var.env_name}-rds-cluster-pg"
   }
-
-  parameter {
-    name         = "time_zone"
-    value        = "UTC"
-    apply_method = "immediate"
-  }
-
-  parameter {
-    name  = "slow_query_log"
-    value = 1
-  }
-
-  parameter {
-    name  = "general_log"
-    value = 1
-  }
-
-  parameter {
-    name  = "long_query_time"
-    value = 5
-  }
-
-  parameter {
-    name  = "character_set_client"
-    value = "utf8"
-  }
-
-  parameter {
-    name  = "character_set_connection"
-    value = "utf8"
-  }
-
-  parameter {
-    name  = "character_set_database"
-    value = "utf8"
-  }
-
-  parameter {
-    name  = "character_set_results"
-    value = "utf8"
-  }
-
-  parameter {
-    name  = "character_set_server"
-    value = "utf8"
-  }
-}
-
-resource "aws_db_option_group" "main" {
-  name = "${var.app_name}-${var.env_name}-db-option-group"
-
-  engine_name          = "postresql"
-  major_engine_version = local.engine_version
 }
 
 resource "aws_rds_cluster" "this" {
