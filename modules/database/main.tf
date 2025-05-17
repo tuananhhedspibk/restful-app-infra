@@ -71,6 +71,11 @@ resource "aws_rds_cluster_parameter_group" "default" {
   tags = {
     Name = "${var.app_name}-${var.env_name}-rds-cluster-pg"
   }
+
+  parameter {
+    name  = "rds.force_ssl"
+    value = "0"
+  }
 }
 
 resource "aws_rds_cluster" "this" {
