@@ -10,11 +10,6 @@ locals {
 
   target_health_check_path = "/v1/health"
   target_health_check_port = 80
-
-  db_database = "restful-app"
-  db_username = "admin"
-  db_password = "password"
-  db_port     = 5432
 }
 
 provider "aws" {
@@ -83,19 +78,31 @@ module "alb" {
   public_subnet_ids        = module.network.public_subnet_ids
 }
 
+data "aws_secretsmanager_secret" "database_secret" {
+  name = "database"
+}
+
+data "aws_secretsmanager_secret_version" "database_secret_version" {
+  secret_id = data.aws_secretsmanager_secret.database_secret.id
+}
+
+locals {
+  secret_json = jsondecode(data.aws_secretsmanager_secret_version.database_secret_version.secret_string)
+}
+
 module "database" {
   source = "../../modules/database"
 
   env_name             = local.env_name
   app_name             = local.app_name
   vpc_id               = module.network.vpc_id
-  port                 = local.db_port
+  port                 = local.secret_json["DATABASE_PORT"]
   proxy_security_group = module.proxy.security_group_id
   vpc_cidr             = local.vpc_cidr
   subnet_ids           = module.network.private_subnet_ids
-  master_username      = local.db_username
-  master_password      = local.db_password
-  database_name        = local.db_database
+  master_username      = local.secret_json["DATABASE_USERNAME"]
+  master_password      = local.secret_json["DATABASE_PASSWORD"]
+  database_name        = local.secret_json["DATABASE_NAME"]
 }
 
 module "ecr" {

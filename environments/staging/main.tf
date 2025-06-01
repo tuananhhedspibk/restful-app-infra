@@ -10,11 +10,6 @@ locals {
 
   target_health_check_path = "/v1/health"
   target_health_check_port = 80
-
-  db_database = "restful-app"
-  db_username = "admin"
-  db_password = "password"
-  db_port     = 5432
 }
 
 provider "aws" {
